@@ -1,0 +1,10 @@
+{
+    "scripts": {
+        "start:backend": "cd backend && npm start",
+        "dev:backend": "cd backend && npm run dev",
+        "dev:frontend": "cd frontend && flutter run",
+        "test:backend": "cd backend && npm test",
+        "test:frontend": "cd frontend && flutter test",
+        "install:all": "npm --prefix backend install && flutter pub get"
+    }
+}

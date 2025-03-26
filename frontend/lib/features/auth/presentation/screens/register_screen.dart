@@ -65,7 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     password,
                   );
                   if (success && mounted) {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.pushReplacementNamed(context, '/expense');
                   }
                 },
               ),

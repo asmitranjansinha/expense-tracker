@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/features/auth/presentation/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
-  static const routeName = '/home';
+class ExpenseScreen extends StatelessWidget {
+  static const routeName = '/expense';
 
-  const HomeScreen({super.key});
+  const ExpenseScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/auth/presentation/screens/login_screen.dart';
 import 'package:frontend/features/auth/presentation/screens/register_screen.dart';
-import 'package:frontend/features/home/presentation/screens/home_screen.dart';
+import 'package:frontend/features/expense/presentation/screens/expense_screen.dart';
 import '../widgets/auth_wrapper.dart';
 
 class AppRouter {
@@ -13,8 +13,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/register':
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
-      case '/home':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case '/expense':
+        return MaterialPageRoute(builder: (_) => const ExpenseScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

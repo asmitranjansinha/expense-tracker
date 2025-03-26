@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/auth/presentation/screens/login_screen.dart';
-import 'package:frontend/features/home/presentation/screens/home_screen.dart';
+import 'package:frontend/features/expense/presentation/screens/expense_screen.dart';
 import 'package:provider/provider.dart';
 import '../../features/auth/presentation/providers/auth_provider.dart';
 
@@ -21,7 +21,7 @@ class AuthWrapper extends StatelessWidget {
 
         final isAuthenticated = snapshot.data ?? false;
         return isAuthenticated
-            ? const HomeScreen() // Your main app screen
+            ? const ExpenseScreen() // Your main app screen
             : const LoginScreen();
       },
     );

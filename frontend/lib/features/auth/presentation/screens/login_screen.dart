@@ -57,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSubmit: (email, password) async {
                   final success = await authProvider.login(email, password);
                   if (success && mounted) {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    Navigator.pushReplacementNamed(context, '/expense');
                   }
                 },
               ),

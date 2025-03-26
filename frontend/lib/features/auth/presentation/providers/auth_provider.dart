@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../../domain/usecases/login_user.dart';
 import '../../domain/usecases/register_user.dart';
 import '../../domain/usecases/is_authenticated.dart';
@@ -30,22 +31,23 @@ class AuthProvider with ChangeNotifier {
   User? get currentUser => _currentUser;
 
   Future<bool> checkAuthentication() async {
-    _isLoading = true;
-    notifyListeners();
-
     try {
-      final authenticated = await isAuthenticated();
+      final authenticated = await isAuthenticated.call();
       if (authenticated) {
-        _currentUser = await getCurrentUser();
+        // Use post-frame callback to safely update state
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          _currentUser = await getCurrentUser.call();
+          _error = null;
+          notifyListeners();
+        });
       }
-      _error = null;
       return authenticated;
     } catch (e) {
-      _error = e.toString();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _error = e.toString();
+        notifyListeners();
+      });
       return false;
-    } finally {
-      _isLoading = false;
-      notifyListeners();
     }
   }
 

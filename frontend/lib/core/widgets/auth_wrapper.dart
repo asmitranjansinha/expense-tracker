@@ -11,7 +11,7 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return FutureBuilder<bool>(
-      future: authProvider.isAuthenticated(),
+      future: authProvider.checkAuthentication(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

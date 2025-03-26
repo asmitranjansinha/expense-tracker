@@ -10,6 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    authProvider.getCurrentUser();
     final user = authProvider.currentUser;
     final theme = Theme.of(context);
 

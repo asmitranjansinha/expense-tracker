@@ -6,6 +6,11 @@ const expenseSchema = new mongoose.Schema({
         required: [true, 'Please provide the expense amount'],
         min: [0, 'Amount cannot be negative'],
     },
+    beneficiary: {
+        type: String,
+        required: [true, 'Please provide the beneficiary name'],
+        trim: true,
+    },
     category: {
         type: String,
         required: [true, 'Please provide a category'],

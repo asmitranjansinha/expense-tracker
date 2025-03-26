@@ -6,10 +6,11 @@ const AppError = require('../utils/errorHandler');
 // @access  Private
 exports.addExpense = async (req, res, next) => {
     try {
-        const { amount, category, description, date } = req.body;
+        const { amount, beneficiary, category, description, date } = req.body;
 
         const expense = await Expense.create({
             amount,
+            beneficiary,
             category,
             description,
             date: date || Date.now(),

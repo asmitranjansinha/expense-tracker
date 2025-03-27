@@ -176,7 +176,7 @@ class ExpenseProvider with ChangeNotifier {
       description: descriptionController.text.isEmpty
           ? null
           : descriptionController.text,
-      date: selectedDate,
+      date: DateTime.now(),
       createdAt: DateTime.now(),
     );
 

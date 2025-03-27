@@ -99,7 +99,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () => _showAddExpenseBottomSheet(context),
           child: const Icon(Icons.add),
         ),
       );
@@ -181,6 +181,137 @@ class _ActivityScreenState extends State<ActivityScreen> {
           ),
       ],
     );
+  }
+
+  void _showAddExpenseBottomSheet(BuildContext context) {
+    final provider = Provider.of<ExpenseProvider>(context, listen: false);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Consumer<ExpenseProvider>(
+            builder: (context, provider, child) {
+              return SingleChildScrollView(
+                child: Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Add New Expense',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+
+                      // Beneficiary Field
+                      TextField(
+                        controller: provider.beneficiaryController,
+                        decoration: const InputDecoration(
+                          labelText: 'Beneficiary*',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Amount Field
+                      TextField(
+                        controller: provider.amountController,
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'Amount*',
+                          border: OutlineInputBorder(),
+                          prefixText: '\$ ',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Category Dropdown
+                      DropdownButtonFormField<String>(
+                        value: provider.selectedCategory,
+                        decoration: const InputDecoration(
+                          labelText: 'Category',
+                          border: OutlineInputBorder(),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'Food', child: Text('Food')),
+                          DropdownMenuItem(
+                              value: 'Travel', child: Text('Travel')),
+                          DropdownMenuItem(
+                              value: 'Transfers', child: Text('Transfers')),
+                          DropdownMenuItem(value: 'Gift', child: Text('Gift')),
+                          DropdownMenuItem(
+                              value: 'Entertainment',
+                              child: Text('Entertainment')),
+                          DropdownMenuItem(
+                              value: 'Utilities', child: Text('Utilities')),
+                          DropdownMenuItem(
+                              value: 'Shopping', child: Text('Shopping')),
+                          DropdownMenuItem(
+                              value: 'Healthcare', child: Text('Healthcare')),
+                          DropdownMenuItem(
+                              value: 'Education', child: Text('Education')),
+                          DropdownMenuItem(
+                              value: 'Other', child: Text('Other')),
+                        ],
+                        onChanged: provider.updateSelectedCategory,
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Description Field
+                      TextField(
+                        controller: provider.descriptionController,
+                        decoration: const InputDecoration(
+                          labelText: 'Description (Optional)',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Error Message
+                      if (provider.error != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Text(
+                            provider.error!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ),
+
+                      // Submit Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => provider.submitExpenseForm(context),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                          ),
+                          child: provider.isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                              : const Text('Add Expense'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+    ).then((_) {
+      provider.resetForm();
+    });
   }
 }
 

@@ -25,7 +25,7 @@ class ExpenseRemoteDataSourceImpl implements ExpenseRemoteDataSource {
 
   @override
   Future<void> addExpense(Expense expense) async {
-    await apiService.post('api/expenses', expense.toJson());
+    await apiService.post('expenses/', expense.toJson());
   }
 
   @override

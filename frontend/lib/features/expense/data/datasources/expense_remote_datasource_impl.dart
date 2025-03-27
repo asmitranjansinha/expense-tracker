@@ -10,8 +10,8 @@ class ExpenseRemoteDataSourceImpl implements ExpenseRemoteDataSource {
 
   @override
   Future<List<Expense>> getExpenses() async {
-    final response = await apiService.get('api/expenses');
-    return (response as List).map((e) => Expense.fromJson(e)).toList();
+    final response = await apiService.get('expenses/');
+    return (response['data'] as List).map((e) => Expense.fromJson(e)).toList();
   }
 
   @override

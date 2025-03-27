@@ -3,7 +3,7 @@ import 'package:frontend/features/expense/domain/repositories/expense_repository
 class GetSummary {
   final ExpenseRepository repository;
 
-  GetSummary(this.repository);
+  GetSummary({required this.repository});
 
   Future<List<Map<String, dynamic>>> call(String period) async {
     return await repository.getSummary(period);

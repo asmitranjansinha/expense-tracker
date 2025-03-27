@@ -13,8 +13,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/register':
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
-      case '/expense':
-        return MaterialPageRoute(builder: (_) => const ExpenseScreen());
+      case '/activity':
+        return MaterialPageRoute(builder: (_) => const ActivityScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

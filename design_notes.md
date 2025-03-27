@@ -40,10 +40,12 @@ The frontend is structured into the following layers:
 
 ### Directory Images
 
-#### frontend
+### frontend
 
 <img src="assets/frontend-design-arch.png" width="200">
-#### api
+
+### Api
+
 <img src="assets/api-design-arch.png" width="200">
 
 ### Key Dependencies:

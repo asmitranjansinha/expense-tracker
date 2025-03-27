@@ -24,12 +24,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // Core dependencies
-        Provider<ApiService>(
-          create: (_) => ApiService(baseUrl: 'http://localhost:3000/api'),
-        ),
         Provider<FlutterSecureStorage>(
           create: (_) => const FlutterSecureStorage(),
+        ),
+        // Core dependencies
+        Provider<ApiService>(
+          create: (ctx) => ApiService(
+            baseUrl: 'http://localhost:3000/api',
+            secureStorage: ctx.read<FlutterSecureStorage>(),
+          ),
         ),
 
         // Auth feature dependencies

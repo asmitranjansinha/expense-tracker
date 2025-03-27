@@ -1,19 +1,32 @@
 // api_service.dart
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../errors/exceptions.dart';
 import '../constants/strings.dart';
 
 class ApiService {
   final String baseUrl;
+  final FlutterSecureStorage secureStorage;
 
-  ApiService({required this.baseUrl});
+  ApiService({
+    required this.baseUrl,
+    required this.secureStorage,
+  });
+
+  Future<Map<String, String>> _getHeaders() async {
+    final token = await secureStorage.read(key: 'auth_token');
+    return {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+  }
 
   Future<dynamic> get(String endpoint) async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/$endpoint'),
-        headers: {'Content-Type': 'application/json'},
+        headers: await _getHeaders(),
       );
       return _processResponse(response);
     } catch (e) {
@@ -21,12 +34,13 @@ class ApiService {
     }
   }
 
+  // Similar updates for post, put, delete methods...
   Future<dynamic> post(String endpoint, dynamic body) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/$endpoint'),
         body: json.encode(body),
-        headers: {'Content-Type': 'application/json'},
+        headers: await _getHeaders(),
       );
       return _processResponse(response);
     } catch (e) {
@@ -38,7 +52,7 @@ class ApiService {
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/$endpoint'),
-        headers: {'Content-Type': 'application/json'},
+        headers: await _getHeaders(),
       );
       return _processResponse(response);
     } catch (e) {

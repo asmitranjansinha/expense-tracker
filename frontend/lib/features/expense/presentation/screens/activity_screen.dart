@@ -111,7 +111,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
       title: const Text(
         'activity',
         style: TextStyle(
-          fontSize: 26,
+          fontSize: 25,
           fontWeight: FontWeight.bold,
         ),
       ),

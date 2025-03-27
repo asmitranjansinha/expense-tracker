@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/features/expense/domain/entities/expense_summary.dart';
 import '../../domain/entities/expense.dart';
 import '../../domain/usecases/add_expense.dart';
 import '../../domain/usecases/delete_expense.dart';
@@ -20,17 +23,19 @@ class ExpenseProvider with ChangeNotifier {
 
   // State variables
   List<Expense> _expenses = [];
-  List<Map<String, dynamic>> _summary = [];
+  List<ExpenseSummary> _dailySummary = [];
+  List<ExpenseSummary> _weeklySummary = [];
+  List<ExpenseSummary> _monthlySummary = [];
   bool _isLoading = false;
   String? _error;
-  String _selectedPeriod = 'monthly';
 
   // Getters
   List<Expense> get expenses => _expenses;
-  List<Map<String, dynamic>> get summary => _summary;
+  List<ExpenseSummary> get dailySummary => _dailySummary;
+  List<ExpenseSummary> get weeklySummary => _weeklySummary;
+  List<ExpenseSummary> get monthlySummary => _monthlySummary;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  String get selectedPeriod => _selectedPeriod;
 
   // State management methods
   Future<void> loadExpenses() async {
@@ -38,25 +43,35 @@ class ExpenseProvider with ChangeNotifier {
     try {
       _expenses = await getExpenses();
       _error = null;
-      await loadSummary(_selectedPeriod);
+      await loadSummary();
     } catch (e) {
       _error = e.toString();
       _expenses = [];
-      _summary = [];
+      _dailySummary = [];
+      _weeklySummary = [];
+      _monthlySummary = [];
     } finally {
       _setLoading(false);
     }
   }
 
-  Future<void> loadSummary(String period) async {
-    _selectedPeriod = period;
+  Future<void> loadSummary() async {
     _setLoading(true);
     try {
-      _summary = await getSummary(period);
+      _dailySummary = await getSummary('daily');
+      _weeklySummary = await getSummary('weekly');
+      _monthlySummary = await getSummary('monthly');
+
+      // Add debug prints
+      log('Daily Summary: ${_dailySummary.length} items');
+      log('Weekly Summary: ${_weeklySummary.length} items');
+      log('Monthly Summary: ${_monthlySummary.length} items');
       _error = null;
     } catch (e) {
       _error = e.toString();
-      _summary = [];
+      _dailySummary = [];
+      _weeklySummary = [];
+      _monthlySummary = [];
     } finally {
       _setLoading(false);
     }
@@ -80,7 +95,7 @@ class ExpenseProvider with ChangeNotifier {
     try {
       await deleteExpense(id);
       _expenses.removeWhere((expense) => expense.id == id);
-      await loadSummary(_selectedPeriod); // Refresh summary
+      await loadSummary(); // Refresh summary
       _error = null;
     } catch (e) {
       _error = e.toString();

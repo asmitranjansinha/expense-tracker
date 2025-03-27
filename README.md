@@ -40,7 +40,7 @@ A full-stack personal finance management application with Flutter frontend and N
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/expense-tracker.git
+   git clone https://github.com/asmitranjansinha/expense-tracker.git
    cd expense-tracker
    ```
 2. **Install dependencies**:

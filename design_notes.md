@@ -38,6 +38,14 @@ The frontend is structured into the following layers:
 │── main.dart
 ```
 
+### Directory Images
+
+#### frontend
+
+<img src="assets/frontend-design-arch.png" width="200">
+#### api
+<img src="assets/api-design-arch.png" width="200">
+
 ### Key Dependencies:
 
 - **State Management**: `provider`

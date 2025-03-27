@@ -43,6 +43,8 @@ dependencies:
   # State Manager packages
   provider: ^6.1.3
   fl_chart: ^0.70.2
+  path_provider: ^2.1.5
+  share_plus: ^10.1.4
 
 dev_dependencies:
   flutter_test:

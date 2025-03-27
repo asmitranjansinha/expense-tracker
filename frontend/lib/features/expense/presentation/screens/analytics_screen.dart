@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/features/expense/domain/entities/expense_summary.dart';
 import 'package:frontend/features/expense/presentation/providers/expense_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart' as charts;
+import 'package:share_plus/share_plus.dart';
 
 class AnalyticsScreen extends StatelessWidget {
   static const routeName = '/analytics';
@@ -30,15 +34,22 @@ class AnalyticsScreen extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            actions: provider.expenses.isEmpty
+                ? []
+                : [
+                    IconButton(
+                      icon: const Icon(Icons.file_download),
+                      onPressed: () =>
+                          _exportMonthlySummary(provider.monthlySummary),
+                    ),
+                  ],
             bottom: TabBar(
               tabs: const [
                 Tab(text: 'Daily'),
                 Tab(text: 'Weekly'),
                 Tab(text: 'Monthly'),
               ],
-              onTap: (index) {
-                // You could add logic here if needed when tabs change
-              },
+              onTap: (index) {},
             ),
           ),
           body: provider.isLoading
@@ -323,5 +334,40 @@ class AnalyticsScreen extends StatelessWidget {
     return summary
         .fold(0, (sum, item) => sum + (item.totalAmount ?? 0))
         .toDouble();
+  }
+
+  Future<void> _exportMonthlySummary(
+      List<ExpenseSummary> monthlySummary) async {
+    try {
+      // Prepare CSV content
+      final csvContent = StringBuffer();
+      // Add header
+      csvContent.writeln('Category,Year,Month,Total Amount,Count');
+
+      // Add data rows
+      for (final summary in monthlySummary) {
+        final id = summary.iId;
+        csvContent.writeln('"${id?.category ?? 'Unknown'}",'
+            '${id?.year ?? ''},'
+            '${id?.month ?? ''},'
+            '${summary.totalAmount ?? 0},'
+            '${summary.count ?? 0}');
+      }
+
+      // Get temporary directory
+      final directory = await getTemporaryDirectory();
+      final file = File(
+          '${directory.path}/monthly_expenses_${DateTime.now().millisecondsSinceEpoch}.csv');
+
+      // Write to file
+      await file.writeAsString(csvContent.toString());
+
+      // Share the file
+      await Share.shareXFiles([XFile(file.path)],
+          text: 'Monthly Expenses Summary');
+    } catch (e) {
+      debugPrint('Error exporting CSV: $e');
+      // You might want to show a snackbar or dialog to inform the user
+    }
   }
 }

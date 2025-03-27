@@ -1,3 +1,4 @@
+// api_service.dart
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../errors/exceptions.dart';
@@ -8,6 +9,18 @@ class ApiService {
 
   ApiService({required this.baseUrl});
 
+  Future<dynamic> get(String endpoint) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      return _processResponse(response);
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
+
   Future<dynamic> post(String endpoint, dynamic body) async {
     try {
       final response = await http.post(
@@ -15,7 +28,18 @@ class ApiService {
         body: json.encode(body),
         headers: {'Content-Type': 'application/json'},
       );
+      return _processResponse(response);
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
+  }
 
+  Future<dynamic> delete(String endpoint) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/$endpoint'),
+        headers: {'Content-Type': 'application/json'},
+      );
       return _processResponse(response);
     } catch (e) {
       throw ServerException(message: e.toString());

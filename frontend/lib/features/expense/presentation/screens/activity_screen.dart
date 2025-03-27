@@ -16,7 +16,7 @@ class ExpenseScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Expense Tracker'),
+        title: const Text('activity'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -38,21 +38,12 @@ class ExpenseScreen extends StatelessWidget {
               'Welcome, ${user?.name ?? 'User'}!',
               style: theme.textTheme.headlineLarge,
             ),
-            const SizedBox(height: 20),
-            Text(
-              'Email: ${user?.email ?? ''}',
-              style: theme.textTheme.bodyLarge,
-            ),
-            const SizedBox(height: 40),
-            // Add your expense tracking widgets here
-            const Expanded(
-              child: Center(
-                child: Text('Your expenses will appear here'),
-              ),
-            ),
+            const SizedBox(height: 16),
+            Text("No expenses recorded yet, add one to get started."),
           ],
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Add expense functionality

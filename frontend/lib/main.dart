@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Expense Tracker',
         theme: ThemeData(primarySwatch: Colors.blue),
         onGenerateRoute: AppRouter.generateRoute,

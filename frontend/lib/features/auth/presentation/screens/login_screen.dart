@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/features/auth/presentation/widgets/auth_form.dart';
+import 'package:frontend/features/expense/presentation/providers/expense_provider.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 
@@ -57,7 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 onSubmit: (email, password) async {
                   final success = await authProvider.login(email, password);
                   if (success && mounted) {
-                    Navigator.pushReplacementNamed(context, '/expense');
+                    Navigator.pushReplacementNamed(context, '/activity');
+                    context.read<ExpenseProvider>().loadExpenses();
                   }
                 },
               ),

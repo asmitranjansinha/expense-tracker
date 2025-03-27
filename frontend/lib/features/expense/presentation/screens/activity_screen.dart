@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/features/auth/presentation/providers/auth_provider.dart';
 import 'package:frontend/features/expense/domain/entities/expense.dart';
 import 'package:frontend/features/expense/presentation/providers/expense_provider.dart';
 import 'package:provider/provider.dart';
@@ -130,23 +131,14 @@ class _ActivityScreenState extends State<ActivityScreen> {
             Navigator.pushNamed(context, '/analytics');
           },
         ),
-        Padding(
-          padding: const EdgeInsets.only(
-            right: 18.0,
-            left: 8.0,
-          ),
-          child: GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, '/profile');
-            },
-            child: CircleAvatar(
-              backgroundImage: AssetImage(
-                'assets/avatars/avatar1.png',
-              ),
-              radius: 15,
-            ),
-          ),
-        ),
+        IconButton(
+          onPressed: () {
+            context.read<AuthProvider>().logout();
+            context.read<ExpenseProvider>().clearData();
+            Navigator.pushReplacementNamed(context, '/login');
+          },
+          icon: Icon(Icons.exit_to_app),
+        )
       ],
     );
   }

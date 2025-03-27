@@ -104,6 +104,16 @@ class ExpenseProvider with ChangeNotifier {
     }
   }
 
+  Future<void> clearData() {
+    _expenses = [];
+    _dailySummary = [];
+    _weeklySummary = [];
+    _monthlySummary = [];
+    _error = null;
+    notifyListeners();
+    return Future.value();
+  }
+
   // Helper methods
   void _setLoading(bool loading) {
     _isLoading = loading;

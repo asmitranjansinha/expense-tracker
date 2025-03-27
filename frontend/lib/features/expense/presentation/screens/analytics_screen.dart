@@ -13,106 +13,117 @@ class AnalyticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ExpenseProvider>(builder: (context, provider, child) {
-      return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(CupertinoIcons.back),
-          ),
-          centerTitle: false,
-          titleSpacing: -3,
-          title: const Text(
-            'Analytics',
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
+      return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => Navigator.pop(context),
+              icon: const Icon(CupertinoIcons.back),
+            ),
+            centerTitle: false,
+            titleSpacing: -3,
+            title: const Text(
+              'Analytics',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            bottom: TabBar(
+              tabs: const [
+                Tab(text: 'Daily'),
+                Tab(text: 'Weekly'),
+                Tab(text: 'Monthly'),
+              ],
+              onTap: (index) {
+                // You could add logic here if needed when tabs change
+              },
             ),
           ),
-        ),
-        body: provider.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          body: provider.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : TabBarView(
                   children: [
-                    _buildSummaryCards(provider),
-                    const SizedBox(height: 24),
-                    _buildCategoryPieChart(provider.monthlySummary, 'Monthly'),
-                    const SizedBox(height: 24),
-                    _buildCategoryPieChart(provider.weeklySummary, 'Weekly'),
-                    const SizedBox(height: 24),
-                    _buildCategoryPieChart(provider.dailySummary, 'Daily'),
-                    const SizedBox(height: 24),
-                    _buildCategoryList(provider.monthlySummary),
+                    _buildAnalyticsView(provider.dailySummary, 'Daily'),
+                    _buildAnalyticsView(provider.weeklySummary, 'Weekly'),
+                    _buildAnalyticsView(provider.monthlySummary, 'Monthly'),
                   ],
                 ),
-              ),
+        ),
       );
     });
   }
 
-  Widget _buildSummaryCards(ExpenseProvider provider) {
-    return Row(
-      children: [
-        _buildSummaryCard(
-          'Daily',
-          _calculateTotal(provider.dailySummary),
-          Icons.today,
-        ),
-        const SizedBox(width: 12),
-        _buildSummaryCard(
-          'Weekly',
-          _calculateTotal(provider.weeklySummary),
-          Icons.calendar_view_week,
-        ),
-        const SizedBox(width: 12),
-        _buildSummaryCard(
-          'Monthly',
-          _calculateTotal(provider.monthlySummary),
-          Icons.calendar_today,
-        ),
-      ],
+  Widget _buildAnalyticsView(List<ExpenseSummary> summary, String period) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSummaryCardForPeriod(summary, period),
+          const SizedBox(height: 24),
+          _buildCategoryPieChart(summary, period),
+          const SizedBox(height: 24),
+          _buildCategoryList(summary),
+        ],
+      ),
     );
   }
 
-  Widget _buildSummaryCard(String period, double amount, IconData icon) {
-    return Expanded(
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, size: 10),
-                  const SizedBox(width: 5),
-                  Text(
-                    period,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+  Widget _buildSummaryCardForPeriod(
+      List<ExpenseSummary> summary, String period) {
+    final icon = _getPeriodIcon(period);
+    final amount = _calculateTotal(summary);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(icon, size: 24),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  period,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                '-\$${amount.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.red,
                 ),
-              ),
-            ],
-          ),
+                const SizedBox(height: 4),
+                Text(
+                  '-\$${amount.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildCategoryPieChart(List<ExpenseSummary> summary, String title) {
+  IconData _getPeriodIcon(String period) {
+    switch (period) {
+      case 'Daily':
+        return Icons.today;
+      case 'Weekly':
+        return Icons.calendar_view_week;
+      case 'Monthly':
+        return Icons.calendar_today;
+      default:
+        return Icons.category;
+    }
+  }
+
+  Widget _buildCategoryPieChart(List<ExpenseSummary> summary, String period) {
     final chartData = _prepareChartData(summary);
 
     return Card(
@@ -122,7 +133,7 @@ class AnalyticsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$title Category Breakdown',
+              '$period Category Breakdown',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -135,7 +146,7 @@ class AnalyticsScreen extends StatelessWidget {
                 charts.PieChartData(
                   sections: chartData,
                   centerSpaceRadius: 0,
-                  sectionsSpace: 4,
+                  sectionsSpace: 2,
                   startDegreeOffset: -90,
                   pieTouchData: charts.PieTouchData(
                     touchCallback:
@@ -193,6 +204,7 @@ class AnalyticsScreen extends StatelessWidget {
     };
 
     final data = _prepareChartData(summary);
+    final totalAmount = _calculateTotal(summary);
 
     return Card(
       child: Padding(
@@ -208,28 +220,64 @@ class AnalyticsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            ...data.map((section) => ListTile(
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: section.color.withOpacity(0.2),
-                      shape: BoxShape.circle,
+            ...data.map((section) {
+              final percentage =
+                  totalAmount > 0 ? (section.value / totalAmount * 100) : 0;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Column(
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: section.color.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          categoryMap[section.title] ?? Icons.category,
+                          color: section.color,
+                        ),
+                      ),
+                      title: Text(section.title),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: LinearProgressIndicator(
+                          value: percentage / 100,
+                          backgroundColor: Colors.grey[200],
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(section.color),
+                          minHeight: 6,
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                      ),
+                      trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '-\$${section.value.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                          ),
+                          Text(
+                            '${percentage.toStringAsFixed(1)}%',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Icon(
-                      categoryMap[section.title] ?? Icons.category,
-                      color: section.color,
-                    ),
-                  ),
-                  title: Text(section.title),
-                  trailing: Text(
-                    '-\$${section.value.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                )),
+                  ],
+                ),
+              );
+            }),
           ],
         ),
       ),
@@ -261,7 +309,7 @@ class AnalyticsScreen extends StatelessWidget {
         color: colors[index],
         value: value,
         title: category,
-        radius: 120,
+        radius: 100,
         titleStyle: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.bold,
